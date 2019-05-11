@@ -25,8 +25,7 @@ namespace ShootFoot1
 
     static class SenderExtensions
     {
-        // Rename this method to SendObject() for safer programming
-        public static void Send<T>(this Sender sender, T data)
+        public static void SendObject<T>(this Sender sender, T data)
         {
             sender.Send(new Message {Type = typeof(T), Data = data});
         }
@@ -37,13 +36,14 @@ namespace ShootFoot1
         static void Main(string[] args)
         {
             var sender = new Sender();
-            sender.Send(42);
+            sender.SendObject(42);
 
             var message = new Message {Type = typeof(int), Data = 42};
             sender.Send(message); // prints Send: Type=Int32, Data=42
 
             var iMessage = (IMessage) message;
-            sender.Send(iMessage); // oops! Type=IMessage, Data=ShootFoot1.Message
+
+            sender.Send((Message)iMessage); // this does not compile without a cast, so no accidental wrapping occurs
         }
     }
 }
